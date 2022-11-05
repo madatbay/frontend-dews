@@ -1,7 +1,7 @@
 import { Button, Card, Input, Loading, Spacer, Text } from "@nextui-org/react";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { API } from "../../axios";
+import API from "../../axios";
 import { useAuth } from "../../useAuth";
 
 export default function LoginPage() {

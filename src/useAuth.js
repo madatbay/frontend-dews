@@ -1,17 +1,18 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { API } from "./axios.js";
+import API from "./axios.js";
 import { useLocalStorage } from "./hooks/useLocalStorage.js";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useLocalStorage("user", null);
+  const [userData, setUserData] = useState();
   const navigate = useNavigate();
 
   const login = (data) => {
     setUser(data);
-    navigate("/profile");
+    navigate("/");
   };
 
   const logout = () => {
@@ -20,34 +21,21 @@ export const AuthProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    const handleRefreshToken = async () => {
-      await API.post("/user/token/refresh/", {
-        refresh: user["refresh"],
-      })
-        .then((response) => {
-          setUser({ refresh: user["refresh"], access: response.data.access });
-        })
-        .catch((error) => {
-          console.error("Refresh token error: ", error);
-          logout();
-        });
-    };
-
-    let interval = setInterval(() => {
-      if (user) {
-        handleRefreshToken();
-      }
-    }, 1000 * 60 * 19);
-    return () => clearInterval(interval);
+    if (user) {
+      API.get("/user/user/me/")
+        .then((res) => setUserData(res.data))
+        .catch((err) => console.error("Cannot fetch user data: ", err));
+    }
   }, [user]);
 
   const value = useMemo(
     () => ({
       user,
+      userData,
       login,
       logout,
     }),
-    [user]
+    [user, userData]
   );
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

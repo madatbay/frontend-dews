@@ -1,12 +1,13 @@
 import { Route, Routes } from "react-router-dom";
 import "./App.css";
 import { ProtectedRoute } from "./hooks/ProtectedRoute";
-import FeedPage from "./pages/FeedPage";
+import FeedPage from "./pages/feed/FeedPage";
 import LoginPage from "./pages/auth/LoginPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import ProfilePage from "./pages/ProfilePage";
 import RegisterPage from "./pages/auth/RegisterPage";
 import AuthLayout from "./pages/auth/AuthLayout";
+import FeedLayout from "./pages/feed/FeedLayout";
 
 function App() {
   return (
@@ -15,7 +16,9 @@ function App() {
         path="/"
         element={
           <ProtectedRoute>
-            <FeedPage />
+            <FeedLayout>
+              <FeedPage />
+            </FeedLayout>
           </ProtectedRoute>
         }
       />
@@ -39,7 +42,9 @@ function App() {
         path="/profile"
         element={
           <ProtectedRoute>
-            <ProfilePage />
+            <FeedLayout>
+              <ProfilePage />
+            </FeedLayout>
           </ProtectedRoute>
         }
       />

@@ -1,5 +1,6 @@
-import { createContext, useContext, useMemo, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { API } from "./axios.js";
 import { useLocalStorage } from "./hooks/useLocalStorage.js";
 
 const AuthContext = createContext();
@@ -8,17 +9,37 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useLocalStorage("user", null);
   const navigate = useNavigate();
 
-  // call this function when you want to authenticate the user
   const login = (data) => {
     setUser(data);
     navigate("/profile");
   };
 
-  // call this function to sign out logged in user
   const logout = () => {
     setUser(null);
-    navigate("/", { replace: true });
+    navigate("/auth/login", { replace: true });
   };
+
+  useEffect(() => {
+    const handleRefreshToken = async () => {
+      await API.post("/user/token/refresh/", {
+        refresh: user["refresh"],
+      })
+        .then((response) => {
+          setUser({ refresh: user["refresh"], access: response.data.access });
+        })
+        .catch((error) => {
+          console.error("Refresh token error: ", error);
+          logout();
+        });
+    };
+
+    let interval = setInterval(() => {
+      if (user) {
+        handleRefreshToken();
+      }
+    }, 1000 * 60 * 19);
+    return () => clearInterval(interval);
+  }, [user]);
 
   const value = useMemo(
     () => ({

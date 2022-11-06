@@ -16,9 +16,7 @@ function App() {
         path="/"
         element={
           <ProtectedRoute>
-            <FeedLayout>
-              <FeedPage />
-            </FeedLayout>
+            <FeedLayout />
           </ProtectedRoute>
         }
       />

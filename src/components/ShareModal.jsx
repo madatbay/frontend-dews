@@ -1,11 +1,28 @@
 import { Button, Modal, Text, Textarea } from "@nextui-org/react";
-import React from "react";
+import React, { useState } from "react";
 
 import { FiSend } from "react-icons/fi";
 import { IoImagesOutline } from "react-icons/io5";
 import { HiCodeBracketSquare } from "react-icons/hi2";
+import useApi from "../hooks/useApi";
+import { useNavigate } from "react-router-dom";
 
 export default function ShareModal({ visible, closeHandler }) {
+  const [content, setContent] = useState();
+  const [error, setError] = useState();
+  const { createPost } = useApi();
+
+  let navigate = useNavigate();
+
+  const handleCreatePost = () => {
+    createPost({ content })
+      .then((res) => {
+        closeHandler();
+        navigate("/?refresh=True");
+      })
+      .catch((error) => setError(error.response.data));
+  };
+
   return (
     <Modal closeButton blur aria-labelledby="modal-title" open={visible} onClose={closeHandler}>
       <Modal.Header>
@@ -27,17 +44,26 @@ export default function ShareModal({ visible, closeHandler }) {
           minRows={4}
           label="Inspiring content:"
           placeholder="Type your idea..."
+          onChange={(e) => setContent(e.target.value)}
         />
         <Button.Group flat color="secondary">
           <Button icon={<IoImagesOutline />} />
           <Button icon={<HiCodeBracketSquare />} />
         </Button.Group>
+        {error &&
+          Object.keys(error).map((key) => (
+            <span key={key}>
+              <Text color="error" key={key} className="text-center">
+                {key}: {error[key].toString()}
+              </Text>
+            </span>
+          ))}
       </Modal.Body>
       <Modal.Footer>
-        <Button auto flat color="default" onClick={closeHandler}>
+        <Button auto light color="default" onPress={closeHandler}>
           Cancel
         </Button>
-        <Button auto color="success" onClick={closeHandler} iconRight={<FiSend />}>
+        <Button auto color="success" onPress={handleCreatePost} disabled={!content} iconRight={<FiSend />}>
           Share
         </Button>
       </Modal.Footer>

@@ -1,0 +1,15 @@
+version: "3.8"
+
+services:
+  frontend:
+    container_name: dews_client
+    build: .
+    volumes:
+      - "./:/app"
+      - "/app/node_modules"
+    ports:
+      - 3000:3000
+    stdin_open: true
+    environment:
+      - REACT_APP_API_BASE_URL=http://api.dews.cf
+    command: npm start

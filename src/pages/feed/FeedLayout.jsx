@@ -98,12 +98,18 @@ export default function FeedLayout({ children }) {
         </Navbar.Collapse>
       </Navbar>
       <Grid.Container gap={4} justify="center" css={{ mw: "90vw", margin: "$0 auto" }}>
-        <Grid xs={12} md={8}>
-          <FeedPage />
-        </Grid>
-        <Grid xs={12} md={4}>
-          <UserSuggestionCard />
-        </Grid>
+        {children ? (
+          <Grid xs={12}>{children}</Grid>
+        ) : (
+          <>
+            <Grid xs={12} md={8}>
+              <FeedPage />
+            </Grid>
+            <Grid xs={12} md={4}>
+              <UserSuggestionCard />
+            </Grid>
+          </>
+        )}
       </Grid.Container>
       <ShareModal visible={visible} closeHandler={closeHandler} />
     </Container>

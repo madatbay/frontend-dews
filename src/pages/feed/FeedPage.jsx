@@ -9,6 +9,7 @@ import { useSearchParams } from "react-router-dom";
 
 import { useAuth } from "../../useAuth";
 import DeletePostModal from "../../components/DeletePostModal";
+import Moment from "react-moment";
 
 export default function FeedPage() {
   const [posts, setPosts] = useState([]);
@@ -53,10 +54,13 @@ export default function FeedPage() {
         posts.map((post, index) => (
           <Grid sm={12} key={index}>
             <Card isHoverable>
-              <Card.Header>
+              <Card.Header css={{ display: "flex", justifyContent: "space-between" }}>
                 <User src={post.author.profile_photo} name={post.author.username}>
                   <User.Link href={`/p/${post.author.username}`}>@{post.author.username}</User.Link>
                 </User>
+                <Text small>
+                  <Moment fromNow date={post.created_at} />
+                </Text>
               </Card.Header>
               <Card.Divider />
               <Card.Body css={{ py: "$10" }}>

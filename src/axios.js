@@ -6,8 +6,8 @@ const API = axios.create({
 });
 
 API.interceptors.request.use((req) => {
-  if (JSON.parse(localStorage.getItem("user"))) {
-    req.headers.Authorization = `Bearer ${JSON.parse(localStorage.getItem("user"))["access"]}`;
+  if (JSON.parse(window.localStorage.getItem("user"))) {
+    req.headers.Authorization = `Bearer ${JSON.parse(window.localStorage.getItem("user"))["access"]}`;
   }
   return req;
 });
@@ -21,12 +21,16 @@ API.interceptors.response.use(
 
     if (originalConfig.url !== "/user/token/" && err.response) {
       // Access Token was expired
+      if (err.response.data.code === "token_not_valid") {
+        window.localStorage.removeItem("user");
+        window.location.href = "/auth/login";
+      }
       if (err.response.status === 401 && !originalConfig._retry) {
         originalConfig._retry = true;
 
         try {
           const rs = await API.post("/user/token/refresh/", {
-            refresh: JSON.parse(localStorage.getItem("user"))["refresh"],
+            refresh: JSON.parse(window.localStorage.getItem("user"))["refresh"],
           });
 
           const { access } = rs.data;

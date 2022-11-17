@@ -18,6 +18,10 @@ const useApi = () => {
     return await API.get("/user/suggested-users-list/");
   };
 
+  const postUserFollowingRequest = async (body) => {
+    return await API.post("/user/update-user-followings/", body);
+  };
+
   // Blog
   const listPosts = async () => {
     return await API.get("/blog/blog/");
@@ -40,6 +44,7 @@ const useApi = () => {
     updateUser,
     register,
     getSuggestedUserList,
+    postUserFollowingRequest,
     listPosts,
     createPost,
     deletePost,

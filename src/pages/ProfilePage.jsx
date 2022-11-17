@@ -4,6 +4,7 @@ import { useAuth } from "../useAuth";
 import { IoIosQuote } from "react-icons/io";
 import { BiCake } from "react-icons/bi";
 import { MdOutlineLocationOn } from "react-icons/md";
+import { RiUserReceived2Line, RiUserSharedLine } from "react-icons/ri";
 
 export default function ProfilePage() {
   const { userData } = useAuth();
@@ -15,26 +16,32 @@ export default function ProfilePage() {
         <Grid.Container css={{ pl: "$6" }}>
           <Grid xs={12}>
             <Text h4 css={{ lineHeight: "$xs" }}>
-              {`${userData?.first_name} ${userData?.last_name}`}
+              {`${userData.first_name} ${userData.last_name}`}
             </Text>
           </Grid>
           <Grid xs={12}>
-            <Text css={{ color: "$accents8" }}>@{userData?.username}</Text>
+            <Text css={{ color: "$accents8" }}>@{userData.username}</Text>
           </Grid>
         </Grid.Container>
       </Card.Header>
       <Card.Body css={{ py: "$2" }}>
-        {userData?.birth_date && (
+        <Text>
+          <RiUserReceived2Line /> Followers {userData.followers.length}
+        </Text>
+        <Text>
+          <RiUserSharedLine /> Followings {userData.followings.length}
+        </Text>
+        {userData.birth_date && (
           <Text>
-            <BiCake /> {userData?.birth_date}
+            <BiCake /> {userData.birth_date}
           </Text>
         )}
-        {userData?.location && (
+        {userData.location && (
           <Text>
             <MdOutlineLocationOn /> {userData?.location}
           </Text>
         )}
-        {userData?.bio && (
+        {userData.bio && (
           <Text>
             <IoIosQuote /> {userData?.bio}
           </Text>
